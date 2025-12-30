@@ -17,8 +17,16 @@ export enum SubscriptionType {
   PREMIUM = 'PREMIUM',
 }
 
-export interface Dietitian {
-  id: string;
-  email: string;
-  fullName: string;
+export interface DietitianProfileData {
+  specialization: string;
+  yearsOfExperience: number;
+  bio?: string;
+}
+
+export interface PatientProfileData {
+  dateOfBirth: Date;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
+  height?: number; // in cm
+  weight?: number; // in kg
+  dietaryPreferences?: string;
 }

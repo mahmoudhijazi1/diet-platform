@@ -14,4 +14,8 @@ export class TenantsService {
     const tenant = this.tenantsRepository.create(tenantData);
     return this.tenantsRepository.save(tenant);
   }
+
+  async findAll(): Promise<Tenant[]> {
+    return this.tenantsRepository.find();
+  }
 }
