@@ -41,9 +41,16 @@ export interface PatientProfileData {
   gender: 'MALE' | 'FEMALE' | 'OTHER';
   height?: number; // in cm
   weight?: number; // in kg
+  initialWeight?: number;
+  goalWeight?: number;
+  activityLevel?: string;
+  medicalConditions?: string;
   dietaryPreferences?: string;
 }
 
 export * from './dtos/create-dietitian-profile.dto';
 export * from './dtos/update-dietitian-profile.dto';
 export * from './dtos/create-dietitian.dto';
+export * from './dtos/create-patient-profile.dto';
+export * from './dtos/update-patient-profile.dto';
+export * from './dtos/create-patient.dto';

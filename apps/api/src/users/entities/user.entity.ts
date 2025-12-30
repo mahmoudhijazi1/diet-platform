@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { UserRole, User as SharedUser } from '@diet/shared-types';
 import { Tenant } from '../../tenants/entities/tenant.entity';
 import { Dietitian } from '../../dietitians/entities/dietitian.entity';
+import { Patient } from '../../patients/entities/patient.entity';
 
 @Entity('users')
 export class User implements SharedUser {
@@ -42,6 +43,9 @@ export class User implements SharedUser {
 
   @OneToOne(() => Dietitian, (dietitian) => dietitian.user)
   dietitianProfile: Dietitian;
+
+  @OneToOne(() => Patient, (patient) => patient.user)
+  patientProfile: Patient;
 
   @CreateDateColumn()
   createdAt: Date;
