@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { UserRole } from '@diet/shared-types';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { UserRole, User as SharedUser } from '@diet/shared-types';
 import { Tenant } from '../../tenants/entities/tenant.entity';
+import { Dietitian } from '../../dietitians/entities/dietitian.entity';
 
 @Entity('users')
-export class User {
+export class User implements SharedUser {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -15,6 +16,12 @@ export class User {
 
   @Column({ unique: true })
   username: string;
+
+  @Column({ nullable: true })
+  phoneNumber: string;
+
+  @Column({ nullable: true })
+  profilePicture: string;
 
   @Column({ select: false })
   password?: string;
@@ -32,6 +39,9 @@ export class User {
   @ManyToOne(() => Tenant, (tenant) => tenant.users, { nullable: true })
   @JoinColumn({ name: 'tenantId' })
   tenant: Tenant;
+
+  @OneToOne(() => Dietitian, (dietitian) => dietitian.user)
+  dietitianProfile: Dietitian;
 
   @CreateDateColumn()
   createdAt: Date;

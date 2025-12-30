@@ -17,6 +17,19 @@ export enum SubscriptionType {
   PREMIUM = 'PREMIUM',
 }
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  username: string;
+  phoneNumber?: string;
+  profilePicture?: string;
+  role: UserRole;
+  tenantId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface DietitianProfileData {
   specialization: string;
   yearsOfExperience: number;
@@ -30,3 +43,7 @@ export interface PatientProfileData {
   weight?: number; // in kg
   dietaryPreferences?: string;
 }
+
+export * from './dtos/create-dietitian-profile.dto';
+export * from './dtos/update-dietitian-profile.dto';
+export * from './dtos/create-dietitian.dto';
