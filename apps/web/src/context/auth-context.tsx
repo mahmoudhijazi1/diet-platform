@@ -31,8 +31,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     });
 
                     if (response.ok) {
-                        const userData = await response.json();
-                        setUser(userData);
+                        const res = await response.json();
+                        setUser(res.data);
                     } else {
                         localStorage.removeItem('access_token');
                     }
@@ -61,7 +61,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 throw new Error('Login failed');
             }
 
-            const data = await response.json();
+            const res = await response.json();
+            const data = res.data;
             localStorage.setItem('access_token', data.access_token);
 
             // Fetch user profile
@@ -72,8 +73,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             });
 
             if (profileResponse.ok) {
-                const userData = await profileResponse.json();
-                setUser(userData);
+                const res = await profileResponse.json();
+                setUser(res.data);
             }
         } catch (error) {
             console.error('Login error:', error);

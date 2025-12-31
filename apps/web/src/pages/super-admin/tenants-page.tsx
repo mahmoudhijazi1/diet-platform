@@ -55,6 +55,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { AppDrawer } from "@/components/common/app-drawer"
 import { DataTable } from "@/components/common/data-table"
+import { DietitiansListDrawer } from "@/components/super-admin/dietitians-list-drawer"
 
 interface Tenant {
   id: string;
@@ -69,10 +70,12 @@ const API_URL = "http://localhost:3000";
 export default function TenantsPage() {
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false)
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false)
+  const [isDietitiansDrawerOpen, setIsDietitiansDrawerOpen] = useState(false)
   
   // Form State
   const [editingTenant, setEditingTenant] = useState<Tenant | null>(null)
   const [tenantToSuspend, setTenantToSuspend] = useState<Tenant | null>(null)
+  const [selectedTenantId, setSelectedTenantId] = useState<string | null>(null)
   
   const [newClinicName, setNewClinicName] = useState("")
   const [newClinicStatus, setNewClinicStatus] = useState<TenantStatus>(TenantStatus.ACTIVE)
@@ -94,7 +97,8 @@ export default function TenantsPage() {
         throw new Error("Failed to fetch tenants")
       }
 
-      return response.json()
+      const res = await response.json()
+      return res.data
     },
     refetchOnWindowFocus: false,
   })
@@ -115,7 +119,8 @@ export default function TenantsPage() {
         throw new Error("Failed to create tenant")
       }
 
-      return response.json()
+      const res = await response.json()
+      return res.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tenants"] })
@@ -139,7 +144,8 @@ export default function TenantsPage() {
         throw new Error("Failed to update tenant")
       }
 
-      return response.json()
+      const res = await response.json()
+      return res.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tenants"] })
@@ -168,6 +174,11 @@ export default function TenantsPage() {
   const openSuspendDialog = (tenant: Tenant) => {
     setTenantToSuspend(tenant)
     setIsSuspendDialogOpen(true)
+  }
+
+  const openDietitiansDrawer = (tenantId: string) => {
+    setSelectedTenantId(tenantId)
+    setIsDietitiansDrawerOpen(true)
   }
 
   const handleSaveTenant = () => {
@@ -298,8 +309,8 @@ export default function TenantsPage() {
                 <DropdownMenuItem>
                   <Eye className="mr-2 h-4 w-4" /> View Details
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Users className="mr-2 h-4 w-4" /> Manage Users
+                <DropdownMenuItem onClick={() => openDietitiansDrawer(tenant.id)}>
+                  <Users className="mr-2 h-4 w-4" /> Manage Dietitians
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => openEditSheet(tenant)}>
                   <Edit className="mr-2 h-4 w-4" /> Edit Clinic
@@ -487,6 +498,12 @@ export default function TenantsPage() {
           <DataTable columns={columns} data={tenants || []} searchKey="name" placeholder="Search clinics..." />
         </CardContent>
       </Card>
+
+      <DietitiansListDrawer 
+        tenantId={selectedTenantId}
+        open={isDietitiansDrawerOpen}
+        onOpenChange={setIsDietitiansDrawerOpen}
+      />
     </div>
   )
 }

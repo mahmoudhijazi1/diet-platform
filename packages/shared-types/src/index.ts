@@ -54,3 +54,5 @@ export * from './dtos/create-dietitian.dto';
 export * from './dtos/create-patient-profile.dto';
 export * from './dtos/update-patient-profile.dto';
 export * from './dtos/create-patient.dto';
+export * from './api-response';
+
