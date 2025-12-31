@@ -42,6 +42,50 @@ export class PatientsService {
     return this.patientsRepository.findOne({ where: { userId } });
   }
 
+  async findAllByTenant(tenantId: string): Promise<Patient[]> {
+    return this.patientsRepository.find({
+      where: { user: { tenantId } },
+      relations: ['user'],
+    });
+  }
+
+  async findOne(id: string): Promise<Patient> {
+    const patient = await this.patientsRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!patient) {
+      throw new NotFoundException(`Patient with ID ${id} not found`);
+    }
+    return patient;
+  }
+
+  async remove(id: string): Promise<void> {
+    const patient = await this.findOne(id);
+    // Delete the user account associated with the patient
+    // This will cascade delete the patient profile due to the relation
+    await this.usersService.remove(patient.userId);
+  }
+
+  async updateFullPatient(id: string, updateData: Partial<CreatePatientDto>): Promise<Patient> {
+    const patient = await this.findOne(id);
+    
+    const { profile, ...userData } = updateData;
+    
+    if (Object.keys(userData).length > 0) {
+      if (userData.password) {
+        userData.password = await bcrypt.hash(userData.password, 10);
+      }
+      await this.usersService.update(patient.userId, userData as any);
+    }
+
+    if (profile) {
+      await this.patientsRepository.update({ id }, profile);
+    }
+
+    return this.findOne(id);
+  }
+
   async update(userId: string, updateData: Partial<PatientProfileData>): Promise<Patient> {
     await this.patientsRepository.update({ userId }, updateData);
     const updatedProfile = await this.findOneByUserId(userId);

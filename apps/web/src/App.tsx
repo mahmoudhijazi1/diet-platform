@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './com
 import LoginPage from './pages/login-page'
 import ProtectedRoute from './components/protected-route'
 import TenantsPage from './pages/super-admin/tenants-page'
+import PatientsPage from './pages/dietitian/patients'
 
 function Dashboard() {
   const { user } = useAuth()
@@ -65,7 +66,7 @@ function App() {
               <Route path="food-db" element={<PlaceholderPage title="Global Food Database" />} />
               
               {/* Dietitian Routes */}
-              <Route path="patients" element={<PlaceholderPage title="Patient Management" />} />
+              <Route path="patients" element={<PatientsPage />} />
               <Route path="meal-plans" element={<PlaceholderPage title="Meal Plans" />} />
               <Route path="appointments" element={<PlaceholderPage title="Appointments" />} />
               

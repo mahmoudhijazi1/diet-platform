@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Patch } from '@nestjs/common';
 import { PatientsService } from './patients.service';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -14,6 +14,30 @@ export class PatientsController {
   create(@CurrentUser() user: User, @Body() createPatientDto: CreatePatientDto) {
     // Dietitian creates patient for their own tenant
     return this.patientsService.createWithUser(createPatientDto, user.tenantId);
+  }
+
+  @Auth(UserRole.DIETITIAN)
+  @Get()
+  findAll(@CurrentUser() user: User) {
+    return this.patientsService.findAllByTenant(user.tenantId);
+  }
+
+  @Auth(UserRole.DIETITIAN)
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.patientsService.findOne(id);
+  }
+
+  @Auth(UserRole.DIETITIAN)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.patientsService.remove(id);
+  }
+
+  @Auth(UserRole.DIETITIAN)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateData: Partial<CreatePatientDto>) {
+    return this.patientsService.updateFullPatient(id, updateData);
   }
 
   @Auth(UserRole.PATIENT)
