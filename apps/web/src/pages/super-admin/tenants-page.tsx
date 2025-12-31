@@ -96,6 +96,7 @@ export default function TenantsPage() {
 
       return response.json()
     },
+    refetchOnWindowFocus: false,
   })
 
   const createTenantMutation = useMutation({
