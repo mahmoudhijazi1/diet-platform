@@ -1,11 +1,12 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import DashboardLayout from './layouts/dashboard-layout'
-import { AuthProvider, useAuth, UserRole } from './context/auth-context'
-import { Button } from './components/ui/button'
+import { AuthProvider, useAuth } from './context/auth-context'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card'
+import LoginPage from './pages/login-page'
+import ProtectedRoute from './components/protected-route'
 
 function Dashboard() {
-  const { user, login } = useAuth()
+  const { user } = useAuth()
 
   return (
     <div className="grid auto-rows-min gap-4 md:grid-cols-3">
@@ -17,18 +18,9 @@ function Dashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-2">
-            <p className="w-full text-sm text-muted-foreground mb-2">Test different roles:</p>
-            <Button variant="outline" onClick={() => login(UserRole.SUPER_ADMIN)}>
-              Switch to Super Admin
-            </Button>
-            <Button variant="outline" onClick={() => login(UserRole.DIETITIAN)}>
-              Switch to Dietitian
-            </Button>
-            <Button variant="outline" onClick={() => login(UserRole.PATIENT)}>
-              Switch to Patient
-            </Button>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            This is your dashboard overview.
+          </p>
         </CardContent>
       </Card>
       
@@ -59,22 +51,26 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            
-            {/* Super Admin Routes */}
-            <Route path="clinics" element={<PlaceholderPage title="Clinics Management" />} />
-            <Route path="logs" element={<PlaceholderPage title="System Logs" />} />
-            <Route path="food-db" element={<PlaceholderPage title="Global Food Database" />} />
-            
-            {/* Dietitian Routes */}
-            <Route path="patients" element={<PlaceholderPage title="Patient Management" />} />
-            <Route path="meal-plans" element={<PlaceholderPage title="Meal Plans" />} />
-            <Route path="appointments" element={<PlaceholderPage title="Appointments" />} />
-            
-            {/* Patient Routes */}
-            <Route path="my-plan" element={<PlaceholderPage title="My Meal Plan" />} />
+          <Route path="/login" element={<LoginPage />} />
+          
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<DashboardLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              
+              {/* Super Admin Routes */}
+              <Route path="clinics" element={<PlaceholderPage title="Clinics Management" />} />
+              <Route path="logs" element={<PlaceholderPage title="System Logs" />} />
+              <Route path="food-db" element={<PlaceholderPage title="Global Food Database" />} />
+              
+              {/* Dietitian Routes */}
+              <Route path="patients" element={<PlaceholderPage title="Patient Management" />} />
+              <Route path="meal-plans" element={<PlaceholderPage title="Meal Plans" />} />
+              <Route path="appointments" element={<PlaceholderPage title="Appointments" />} />
+              
+              {/* Patient Routes */}
+              <Route path="my-plan" element={<PlaceholderPage title="My Meal Plan" />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
