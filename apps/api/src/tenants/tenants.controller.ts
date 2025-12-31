@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { Tenant } from './entities/tenant.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -21,5 +21,17 @@ export class TenantsController {
   @Roles(UserRole.SUPER_ADMIN)
   findAll() {
     return this.tenantsService.findAll();
+  }
+
+  @Patch(':id')
+  @Roles(UserRole.SUPER_ADMIN)
+  update(@Param('id') id: string, @Body() tenantData: Partial<Tenant>) {
+    return this.tenantsService.update(id, tenantData);
+  }
+
+  @Delete(':id')
+  @Roles(UserRole.SUPER_ADMIN)
+  remove(@Param('id') id: string) {
+    return this.tenantsService.remove(id);
   }
 }

@@ -18,4 +18,13 @@ export class TenantsService {
   async findAll(): Promise<Tenant[]> {
     return this.tenantsRepository.find();
   }
+
+  async update(id: string, tenantData: Partial<Tenant>): Promise<Tenant> {
+    await this.tenantsRepository.update(id, tenantData);
+    return this.tenantsRepository.findOneByOrFail({ id });
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.tenantsRepository.delete(id);
+  }
 }

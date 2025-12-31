@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/auth-context'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card'
 import LoginPage from './pages/login-page'
 import ProtectedRoute from './components/protected-route'
+import TenantsPage from './pages/super-admin/tenants-page'
 
 function Dashboard() {
   const { user } = useAuth()
@@ -59,7 +60,7 @@ function App() {
               <Route path="dashboard" element={<Dashboard />} />
               
               {/* Super Admin Routes */}
-              <Route path="clinics" element={<PlaceholderPage title="Clinics Management" />} />
+              <Route path="clinics" element={<TenantsPage />} />
               <Route path="logs" element={<PlaceholderPage title="System Logs" />} />
               <Route path="food-db" element={<PlaceholderPage title="Global Food Database" />} />
               
