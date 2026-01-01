@@ -49,9 +49,14 @@ export class PatientsService {
     });
   }
 
-  async findOne(id: string): Promise<Patient> {
+  async findOne(id: string, tenantId?: string): Promise<Patient> {
+    const where: any = { id };
+    if (tenantId) {
+      where.user = { tenantId };
+    }
+
     const patient = await this.patientsRepository.findOne({
-      where: { id },
+      where,
       relations: ['user'],
     });
     if (!patient) {
@@ -60,15 +65,31 @@ export class PatientsService {
     return patient;
   }
 
-  async remove(id: string): Promise<void> {
-    const patient = await this.findOne(id);
+  async findOneByUsername(username: string, tenantId?: string): Promise<Patient> {
+    const where: any = { user: { username } };
+    if (tenantId) {
+      where.user.tenantId = tenantId;
+    }
+
+    const patient = await this.patientsRepository.findOne({
+      where,
+      relations: ['user'],
+    });
+    if (!patient) {
+      throw new NotFoundException(`Patient with username ${username} not found`);
+    }
+    return patient;
+  }
+
+  async remove(id: string, tenantId?: string): Promise<void> {
+    const patient = await this.findOne(id, tenantId);
     // Delete the user account associated with the patient
     // This will cascade delete the patient profile due to the relation
     await this.usersService.remove(patient.userId);
   }
 
-  async updateFullPatient(id: string, updateData: Partial<CreatePatientDto>): Promise<Patient> {
-    const patient = await this.findOne(id);
+  async updateFullPatient(id: string, updateData: Partial<CreatePatientDto>, tenantId?: string): Promise<Patient> {
+    const patient = await this.findOne(id, tenantId);
     
     const { profile, ...userData } = updateData;
     
@@ -83,7 +104,7 @@ export class PatientsService {
       await this.patientsRepository.update({ id }, profile);
     }
 
-    return this.findOne(id);
+    return this.findOne(id, tenantId);
   }
 
   async update(userId: string, updateData: Partial<PatientProfileData>): Promise<Patient> {

@@ -6,6 +6,7 @@ import LoginPage from './pages/login-page'
 import ProtectedRoute from './components/protected-route'
 import TenantsPage from './pages/super-admin/tenants-page'
 import PatientsPage from './pages/dietitian/patients'
+import PatientDetailsPage from './pages/dietitian/patients/patient-details-page'
 
 function Dashboard() {
   const { user } = useAuth()
@@ -67,6 +68,7 @@ function App() {
               
               {/* Dietitian Routes */}
               <Route path="patients" element={<PatientsPage />} />
+              <Route path="patients/:id" element={<PatientDetailsPage />} />
               <Route path="meal-plans" element={<PlaceholderPage title="Meal Plans" />} />
               <Route path="appointments" element={<PlaceholderPage title="Appointments" />} />
               

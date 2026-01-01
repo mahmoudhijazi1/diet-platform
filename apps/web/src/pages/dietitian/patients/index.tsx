@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { type ColumnDef } from "@tanstack/react-table"
 import { 
@@ -7,7 +8,8 @@ import {
   Pencil, 
   Trash2,
   Loader2,
-  Plus
+  Plus,
+  Eye
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -74,7 +76,14 @@ export default function PatientsPage() {
           </Button>
         )
       },
-      cell: ({ row }) => <div className="font-medium">{row.original.user.name}</div>,
+      cell: ({ row }) => (
+        <Link 
+          to={`/patients/${row.original.user.username}`}
+          className="font-medium hover:underline"
+        >
+          {row.original.user.name}
+        </Link>
+      ),
     },
     {
       accessorKey: "user.email",
@@ -114,6 +123,11 @@ export default function PatientsPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link to={`/patients/${patient.user.username}`}>
+                  <Eye className="mr-2 h-4 w-4" /> View Details
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(patient)}>
                 <Pencil className="mr-2 h-4 w-4" /> Edit Profile
               </DropdownMenuItem>

@@ -23,21 +23,25 @@ export class PatientsController {
   }
 
   @Auth(UserRole.DIETITIAN)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.patientsService.findOne(id);
+  @Get(':idOrUsername')
+  findOne(@Param('idOrUsername') idOrUsername: string, @CurrentUser() user: User) {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrUsername);
+    if (isUuid) {
+      return this.patientsService.findOne(idOrUsername, user.tenantId);
+    }
+    return this.patientsService.findOneByUsername(idOrUsername, user.tenantId);
   }
 
   @Auth(UserRole.DIETITIAN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.patientsService.remove(id);
+  remove(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.patientsService.remove(id, user.tenantId);
   }
 
   @Auth(UserRole.DIETITIAN)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateData: Partial<CreatePatientDto>) {
-    return this.patientsService.updateFullPatient(id, updateData);
+  update(@Param('id') id: string, @Body() updateData: Partial<CreatePatientDto>, @CurrentUser() user: User) {
+    return this.patientsService.updateFullPatient(id, updateData, user.tenantId);
   }
 
   @Auth(UserRole.PATIENT)
